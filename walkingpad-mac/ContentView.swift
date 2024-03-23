@@ -158,16 +158,24 @@ struct TreadmillControls : View {
                 else {
                     Container() {
                         if (countdown == 0) {
-                            Button(action: {
-                                treadmill.start()
-                                countdown = 3
-                            }) {
-                                Text("Start")
-                                    .frame(maxWidth: .infinity)
+                            VStack(spacing: 8) {
+                                Text("Ready to walk?")
+                                    .font(.system(size: 18, weight: .bold))
+                                Text("After starting, your treadmill will count down before it starts")
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(.white.opacity(0.8))
+                                Spacer()
+                                Button(action: {
+                                    treadmill.start()
+                                    countdown = 3
+                                }) {
+                                    Text("Start")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .buttonStyle(.borderedProminent)
+                                .tint(.blue)
                             }
-                            .frame(maxWidth: .infinity)
-                            .buttonStyle(.borderedProminent)
-                            .tint(.blue)
                         } else {
                             Text(String(countdown))
                                 .font(.system(size: 24))

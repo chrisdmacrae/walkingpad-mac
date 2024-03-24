@@ -16,7 +16,6 @@ struct TreadmillControls : View {
     @ObservedObject var treadmill: TreadmillService
     @ObservedObject private var viewModel: TreadmillViewModel
     @State private var currentSpeed = 0.0
-    @State private var desiredSpeed = 20.0
     @State private var isEditing = false
     @State private var sliderState: CompactSliderState = .zero
         
@@ -83,7 +82,7 @@ struct TreadmillControls : View {
                                 
                                 ZStack {
                                     GeometryReader { geometry in
-                                        CompactSlider(value: $desiredSpeed, in: 5...60, step: 1, state: $sliderState) {
+                                        CompactSlider(value: $viewModel.desiredSpeed, in: 5...60, step: 1, state: $sliderState) {
                                             Image(systemName: "figure.run")
                                             Spacer()
                                             Text(String(format: "%.2f", currentSpeed / 10))
@@ -93,7 +92,7 @@ struct TreadmillControls : View {
                                         
                                         
                                         GeometryReader { buttonGeometry in
-                                            Text(String(format: "%.2f", desiredSpeed / 10))
+                                            Text(String(format: "%.2f", viewModel.desiredSpeed / 10))
                                                 .font(.system(size: 12))
                                                 .foregroundColor(.white)
                                                 .padding(6)
@@ -163,8 +162,8 @@ struct TreadmillControls : View {
         .onChange(of: treadmill.currentSpeed) {
             currentSpeed = Double(treadmill.currentSpeed)
         }
-        .onChange(of: desiredSpeed) {
-            viewModel.setSpeed(desiredSpeed: Int(desiredSpeed))
+        .onChange(of: viewModel.desiredSpeed) {
+            viewModel.setSpeed(desiredSpeed: Int(viewModel.desiredSpeed))
         }
         .frame(maxWidth: .infinity)
     }
@@ -246,6 +245,7 @@ struct StartState : View {
 class TreadmillViewModel : ObservableObject {
     @ObservedObject var treadmill: TreadmillService
     var context: ModelContext
+    @Published var desiredSpeed = 20.0
     @Published var countdown: Int = 0
     
     private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -299,14 +299,16 @@ class TreadmillViewModel : ObservableObject {
         guard isSpeedChangeEnabled else { return }
         guard treadmill.isRunning else { return }
 
-        treadmill.decreaseSpeed(increment: 5)
+        desiredSpeed -= 5
+        treadmill.setSpeed(speed: Int(desiredSpeed))
     }
     
     func increaseSpeed() {
         guard isSpeedChangeEnabled else { return }
         guard treadmill.isRunning else { return }
-
-        treadmill.increaseSpeed(increment: 5)
+    
+        desiredSpeed += 5
+        treadmill.setSpeed(speed: Int(desiredSpeed))
     }
     
     func start() {

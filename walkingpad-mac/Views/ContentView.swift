@@ -14,9 +14,12 @@ struct ContentView: View {
     var body: some View {
         if (menuType == .control) {
             ControlView(service: service)
+                .focusEffectDisabled()
+
         }
         else {
             ContextMenu()
+                .focusEffectDisabled()
         }
     }
 }

@@ -14,7 +14,6 @@ struct SettingsView: View {
             KeyboardShortcuts.Recorder("Toggle treadmill on/off:", name: .toggleTreadmill)
             KeyboardShortcuts.Recorder("Decrease speed:", name: .decreaseSpeed)
             KeyboardShortcuts.Recorder("Increase speed:", name: .increaseSpeed)
-
         }
     }
 }

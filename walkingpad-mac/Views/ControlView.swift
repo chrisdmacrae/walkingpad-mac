@@ -43,7 +43,6 @@ struct ControlView: View {
         .padding(8)
         .frame(width: 300, height: 200)
         .background(.windowBackground)
-        .focusEffectDisabled()
     }
         
 }

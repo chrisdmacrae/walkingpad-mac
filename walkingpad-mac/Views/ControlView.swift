@@ -19,7 +19,7 @@ struct ControlView: View {
                 TreadmillControls(treadmill: service.treadmill!)
             }
             else if (service.isScanning || service.isConnecting || service.treadmill != nil) {
-                Spinner(text: "Setting things up...")
+                Spinner(text: "Connecting to your Treadmill...")
             }
         }
         .onAppear() {

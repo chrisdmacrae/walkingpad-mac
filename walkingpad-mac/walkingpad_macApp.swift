@@ -15,7 +15,6 @@ struct walkingpad_macApp: App {
     @State var isMenuPresented: Bool = false
     @State var menuType = AppMenuType.control
 
-    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
         ])
@@ -57,7 +56,7 @@ struct walkingpad_macApp: App {
         
         Settings {
             SettingsView()
-                .frame(minWidth: 768, minHeight: 480)
+                .frame(width: 768, height: 480)
         }
     }
 }

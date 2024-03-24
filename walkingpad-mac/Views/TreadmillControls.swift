@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import KeyboardShortcuts
 import CompactSlider
 import Combine
@@ -19,9 +20,14 @@ struct TreadmillControls : View {
     @State private var isEditing = false
     @State private var sliderState: CompactSliderState = .zero
     
-    init(treadmill: TreadmillService) {
+    @Query(
+        filter: Session.todayPredicate()
+    )
+    private var sessions: [Session]
+    
+    init(treadmill: TreadmillService, context: ModelContext) {
         self.treadmill = treadmill
-        viewModel = TreadmillViewModel(treadmill: treadmill)
+        viewModel = TreadmillViewModel(treadmill: treadmill, context: context)
     }
     
     var body : some View {
@@ -130,14 +136,23 @@ struct TreadmillControls : View {
                     .tint(.red)
                 }
                 else {
-                    Container() {
-                        if (viewModel.countdown == 0) {
+                    if (viewModel.countdown == 0) {
+                        Container() {
                             VStack(spacing: 8) {
                                 Text("Ready to walk?")
                                     .font(.system(size: 18, weight: .bold))
                                 Text("After starting, your treadmill will count down before it starts")
                                     .font(.system(size: 12))
                                     .foregroundStyle(.white.opacity(0.8))
+                                
+                                Spacer()
+                                
+                                HStack(spacing: 8) {
+                                    Container() {
+                                        Text("\(sessions.count) sessions today")
+                                    }
+                                }
+                                
                                 Spacer()
                                 Button(action: {
                                     viewModel.start()
@@ -149,20 +164,15 @@ struct TreadmillControls : View {
                                 .buttonStyle(.borderedProminent)
                                 .tint(.blue)
                             }
-                        } else {
-                            Text(String(viewModel.countdown))
-                                .font(.system(size: 24))
-                                .onAppear() {
-                                    Task {
-                                        await viewModel.countDown()
-                                    }
+                        }
+                    } else {
+                        Text(String(viewModel.countdown))
+                            .font(.system(size: 24))
+                            .onAppear() {
+                                Task {
+                                    await viewModel.countDown()
                                 }
-                        }
-                    }
-                    .onAppear() {
-                        KeyboardShortcuts.onKeyUp(for: .toggleTreadmill) { [self] in
-                            viewModel.toggle()
-                        }
+                            }
                     }
                 }
             }
@@ -187,15 +197,18 @@ struct TreadmillControls : View {
 @MainActor
 class TreadmillViewModel : ObservableObject {
     @ObservedObject var treadmill: TreadmillService
+    var context: ModelContext
     @Published var countdown: Int = 0
     
     private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     private var cancellables = Set<AnyCancellable>()
     private var isToggleEnabled = true
     private var isSpeedChangeEnabled = true
+    private var session: Session?
     
-    init(treadmill: TreadmillService) {
+    init(treadmill: TreadmillService, context: ModelContext) {
         self.treadmill = treadmill
+        self.context = context
         
         timer.sink { _ in
             self.isToggleEnabled = true
@@ -251,9 +264,15 @@ class TreadmillViewModel : ObservableObject {
     func start() {
         treadmill.start()
         countdown = 5
+        session = Session()
+        context.insert(session!)
     }
     
     func stop() {
+        session?.steps = treadmill.stats.steps
+        session?.distance = treadmill.stats.distance
+        session?.time = treadmill.stats.time
+
         treadmill.stop()
         countdown = 0
     }
@@ -272,5 +291,5 @@ class TreadmillViewModel : ObservableObject {
 }
 
 #Preview {
-    TreadmillControls(treadmill: TreadmillService())
+    TreadmillControls(treadmill: TreadmillService(), context: try! .init(.init(for: Session.self)))
 }

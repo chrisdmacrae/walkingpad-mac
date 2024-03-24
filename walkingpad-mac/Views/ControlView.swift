@@ -16,7 +16,7 @@ struct ControlView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
             if (service.treadmill != nil) {
-                TreadmillControls(treadmill: service.treadmill!)
+                TreadmillControls(treadmill: service.treadmill!, context: modelContext)
             }
             else if (service.isScanning || service.isConnecting || service.treadmill != nil) {
                 Spinner(text: "Connecting to your Treadmill...")

@@ -29,6 +29,7 @@
 		A49F77382BAF19CB00F1EA99 /* NSTextCheckingResult+groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F77372BAF19CB00F1EA99 /* NSTextCheckingResult+groups.swift */; };
 		A49F773B2BAF24E000F1EA99 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = A49F773A2BAF24E000F1EA99 /* Starscream */; };
 		A49F773D2BAF24F000F1EA99 /* TreadmillService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F773C2BAF24F000F1EA99 /* TreadmillService.swift */; };
+		A4FB80362BAFD13A0065AE52 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FB80352BAFD13A0065AE52 /* Session.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		A49F77312BAF134500F1EA99 /* python-lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "python-lib"; sourceTree = "<group>"; };
 		A49F77372BAF19CB00F1EA99 /* NSTextCheckingResult+groups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTextCheckingResult+groups.swift"; sourceTree = "<group>"; };
 		A49F773C2BAF24F000F1EA99 /* TreadmillService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreadmillService.swift; sourceTree = "<group>"; };
+		A4FB80352BAFD13A0065AE52 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +154,7 @@
 		A49F6E552BAE4B4D00F1EA99 /* walkingpad-mac */ = {
 			isa = PBXGroup;
 			children = (
+				A4FB80342BAFD12E0065AE52 /* models */,
 				A47B78762BAF9FAF004D4E57 /* services */,
 				A47B78752BAF9FA7004D4E57 /* Views */,
 				A49F77362BAF19BB00F1EA99 /* extensions */,
@@ -195,6 +198,14 @@
 				A49F77372BAF19CB00F1EA99 /* NSTextCheckingResult+groups.swift */,
 			);
 			path = extensions;
+			sourceTree = "<group>";
+		};
+		A4FB80342BAFD12E0065AE52 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				A4FB80352BAFD13A0065AE52 /* Session.swift */,
+			);
+			path = models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -349,6 +360,7 @@
 				A49F6E9D2BAF0B9100F1EA99 /* WalkingPadService.swift in Sources */,
 				A43E09682BAF475400FC7F98 /* SettingsView.swift in Sources */,
 				A43E096A2BAF476300FC7F98 /* Constants.swift in Sources */,
+				A4FB80362BAFD13A0065AE52 /* Session.swift in Sources */,
 				A47B78782BAF9FFA004D4E57 /* ContentView.swift in Sources */,
 				A49F773D2BAF24F000F1EA99 /* TreadmillService.swift in Sources */,
 				A47B787A2BAFA373004D4E57 /* Container.swift in Sources */,

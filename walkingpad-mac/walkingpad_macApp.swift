@@ -11,12 +11,13 @@ import MenuBarExtraAccess
 
 @main
 struct walkingpad_macApp: App {
-    @ObservedObject private var service = try! WalkingPadService()
+    @ObservedObject private var service = WalkingPadService()
     @State var isMenuPresented: Bool = false
     @State var menuType = AppMenuType.control
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
+            Session.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         
@@ -30,9 +31,9 @@ struct walkingpad_macApp: App {
     var body: some Scene {
         MenuBarExtra("WalkingPad") {
             ContentView(menuType: $menuType, service: service)
+                .modelContainer(sharedModelContainer)
         }
         .menuBarExtraStyle(.window)
-        .modelContainer(sharedModelContainer)
         .menuBarExtraAccess(isPresented: $isMenuPresented) { statusItem in
             NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { event in
                 if event.window == statusItem.button?.window {

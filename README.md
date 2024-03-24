@@ -1,5 +1,10 @@
 # WalkingPad Mac
 
+## Pre-requisites
+
+- Python 3.12
+- Xcode 15.3+
+
 ## Setup
 
 Run:

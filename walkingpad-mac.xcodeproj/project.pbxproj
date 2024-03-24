@@ -17,6 +17,7 @@
 		A47B787A2BAFA373004D4E57 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B78792BAFA373004D4E57 /* Container.swift */; };
 		A47B787C2BAFA384004D4E57 /* Spinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B787B2BAFA384004D4E57 /* Spinner.swift */; };
 		A47B787E2BAFA3A6004D4E57 /* TreadmillControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B787D2BAFA3A6004D4E57 /* TreadmillControls.swift */; };
+		A47B78802BAFADCB004D4E57 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A47B787F2BAFADCB004D4E57 /* README.md */; };
 		A49F6E572BAE4B4D00F1EA99 /* walkingpad_macApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E562BAE4B4D00F1EA99 /* walkingpad_macApp.swift */; };
 		A49F6E592BAE4B4D00F1EA99 /* ControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E582BAE4B4D00F1EA99 /* ControlView.swift */; };
 		A49F6E6B2BAE4B4F00F1EA99 /* walkingpad_macTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E6A2BAE4B4F00F1EA99 /* walkingpad_macTests.swift */; };
@@ -55,6 +56,7 @@
 		A47B78792BAFA373004D4E57 /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		A47B787B2BAFA384004D4E57 /* Spinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spinner.swift; sourceTree = "<group>"; };
 		A47B787D2BAFA3A6004D4E57 /* TreadmillControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreadmillControls.swift; sourceTree = "<group>"; };
+		A47B787F2BAFADCB004D4E57 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A49F6E532BAE4B4D00F1EA99 /* walkingpad-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "walkingpad-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A49F6E562BAE4B4D00F1EA99 /* walkingpad_macApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = walkingpad_macApp.swift; sourceTree = "<group>"; };
 		A49F6E582BAE4B4D00F1EA99 /* ControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlView.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 		A49F6E4A2BAE4B4D00F1EA99 = {
 			isa = PBXGroup;
 			children = (
+				A47B787F2BAFADCB004D4E57 /* README.md */,
 				A49F77312BAF134500F1EA99 /* python-lib */,
 				A49F6E552BAE4B4D00F1EA99 /* walkingpad-mac */,
 				A49F6E692BAE4B4F00F1EA99 /* walkingpad-macTests */,
@@ -313,6 +316,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A47B78802BAFADCB004D4E57 /* README.md in Resources */,
 				A49F77322BAF134500F1EA99 /* python-lib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

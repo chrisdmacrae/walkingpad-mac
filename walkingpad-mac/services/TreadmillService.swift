@@ -107,7 +107,7 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
     }
     
     func streamStats() async {
-        while(isRunning) {
+        while(isBluetoothConnected) {
             self.getStats()
             do {
                 try await Task.sleep(nanoseconds: UInt64(1 * Double(NSEC_PER_SEC)))
@@ -118,21 +118,21 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
     }
     
     func increaseSpeed(increment: Int) {
-        currentSpeed += increment;
-        if (currentSpeed > 60) {
-          currentSpeed = 60;
+        var desiredSpeed = currentSpeed + increment;
+        if (desiredSpeed > 60) {
+            desiredSpeed = 60;
         }
         
-        return setSpeed(speed: currentSpeed);
+        return setSpeed(speed: desiredSpeed);
     }
 
     func decreaseSpeed(increment: Int) {
-        currentSpeed -= increment;
-        if (currentSpeed < 0) {
-          currentSpeed = 0;
+        var desiredSpeed = currentSpeed - increment;
+        if (desiredSpeed < 5) {
+            desiredSpeed = 5;
         }
       
-        return setSpeed(speed: currentSpeed);
+        return setSpeed(speed: desiredSpeed);
     }
     
     func setSpeed(speed: Int) {
@@ -160,13 +160,10 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
                 // Try to deserialize the JSON data into a Swift dictionary
                 if let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: AnyObject] {
                     let receivedResponse = ReceivedResponse(id: String(describing: json["id"]!))
-                    
-                    print(receivedResponse)
-                    
+                                        
                     if let expectedResponse = expectedResponses.first(where: { res in
                         res.id == receivedResponse.id
                     }) {
-                        print(expectedResponse)
                         switch (expectedResponse.method) {
                         case "run":
                             self.isRunning = true
@@ -174,12 +171,21 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
                             self.isRunning = false
                             self.currentSpeed = 0
                         case "get_stats":
-                            let response = StatsResponse(time: json["result"]?["time"] as! Double, dist: json["result"]?["dist"] as! Double, steps: json["result"]?["steps"] as! Int, state: json["result"]?["state"] as! Int)
-                            
+                            let response = StatsResponse(
+                                    time: json["result"]?["time"] as! Double,
+                                    dist: json["result"]?["dist"] as! Double,
+                                    speed: json["result"]?["speed"] as! Int,
+                                    steps: json["result"]?["steps"] as! Int,
+                                    state: json["result"]?["state"] as! Int
+                            )
+                                                        
                             self.stats = Stats(time: response.time, distance: response.dist, steps: response.steps)
                             self.currentSpeed = response.speed
-                            if (response.state == 0 && stats.time > 0) {
+                            if (response.state == 0 && response.speed == 0) {
                                 self.isRunning = false
+                            }
+                            else if (response.state != 0) {
+                                self.isRunning = true
                             }
                         case "set_speed":
                             print(json)

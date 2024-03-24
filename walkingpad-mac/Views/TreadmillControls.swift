@@ -15,7 +15,9 @@ struct TreadmillControls : View {
     @ObservedObject var treadmill: TreadmillService
     @ObservedObject private var viewModel: TreadmillViewModel
     @State private var currentSpeed = 0.0
+    @State private var desiredSpeed = 0.0
     @State private var isEditing = false
+    @State private var sliderState: CompactSliderState = .zero
     
     init(treadmill: TreadmillService) {
         self.treadmill = treadmill
@@ -77,11 +79,20 @@ struct TreadmillControls : View {
                                 .buttonStyle(.plain)
                                 
                                 VStack {
-                                    CompactSlider(value: $currentSpeed, in: 5...60, step: 1) {
+                                    CompactSlider(value: $desiredSpeed, in: 5...60, step: 1) {
                                         Image(systemName: "figure.run")
-                                            Spacer()
-                                            Text(String(format: "%.2f", currentSpeed / 10))
-                                        }
+                                        Spacer()
+                                        Text(String(format: "%.2f", currentSpeed / 10))
+                                    }
+                                    
+                                    Text(String(format: "%.2f", desiredSpeed / 10))
+                                        .foregroundColor(.white)
+                                        .padding(6)
+                                        .background(
+                                            Capsule().fill(Color.blue)
+                                        )
+                                        .offset(x: sliderState.dragLocationX.lower)
+                                        .allowsHitTesting(false)
                                 }
                                 
                                 Button(action: {
@@ -97,11 +108,6 @@ struct TreadmillControls : View {
                                 }
                                 .buttonStyle(.plain)
                             }
-                        }
-                    }
-                    .onAppear() {
-                        Task {
-                            await treadmill.streamStats()
                         }
                     }
                 }
@@ -155,11 +161,18 @@ struct TreadmillControls : View {
                 }
             }
         }
+        .onChange(of: treadmill.isBluetoothConnected) {
+            if (treadmill.isBluetoothConnected) {
+                Task {
+                    await treadmill.streamStats()
+                }
+            }
+        }
         .onChange(of: treadmill.currentSpeed) {
             currentSpeed = Double(treadmill.currentSpeed)
         }
-        .onChange(of: currentSpeed) {
-            treadmill.setSpeed(speed: Int(currentSpeed))
+        .onChange(of: desiredSpeed) {
+            treadmill.setSpeed(speed: Int(desiredSpeed))
         }
         .frame(maxWidth: .infinity)
     }

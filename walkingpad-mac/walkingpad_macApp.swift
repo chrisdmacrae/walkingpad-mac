@@ -56,7 +56,6 @@ struct walkingpad_macApp: App {
         
         Settings {
             SettingsView()
-                .frame(width: 768, height: 480)
         }
     }
 }

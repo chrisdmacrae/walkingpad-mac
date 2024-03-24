@@ -170,7 +170,6 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
                         switch (expectedResponse.method) {
                         case "run":
                             self.isRunning = true
-                            self.currentSpeed = 20
                         case "stop":
                             self.isRunning = false
                             self.currentSpeed = 0
@@ -178,6 +177,7 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
                             let response = StatsResponse(time: json["result"]?["time"] as! Double, dist: json["result"]?["dist"] as! Double, steps: json["result"]?["steps"] as! Int, state: json["result"]?["state"] as! Int)
                             
                             self.stats = Stats(time: response.time, distance: response.dist, steps: response.steps)
+                            self.currentSpeed = response.speed
                             if (response.state == 0 && stats.time > 0) {
                                 self.isRunning = false
                             }
@@ -237,6 +237,7 @@ struct ReceivedResponse {
 struct StatsResponse {
     var time: Double
     var dist: Double
+    var speed: Int
     var steps: Int
     var state: Int
 }

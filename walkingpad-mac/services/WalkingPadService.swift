@@ -41,8 +41,10 @@ class WalkingPadService : ObservableObject {
         let output = try! Command.init(executablePath: pythonFilePath)
             .addArgument(scanPath!)
             .waitForOutput()
-        let dirtyMatcher = try! NSRegularExpression(pattern: "Device: \\[ 0\\], (.*-.*-.*-.*), WalkingPad,")
+        let dirtyMatcher = try! NSRegularExpression(pattern: "Device: \\[ 0\\], (.*-.*-.*-.*), .*,")
         let stdout = output.stdout
+        
+        print(stdout)
         
         if let match = dirtyMatcher.firstMatch(in: stdout, range: NSMakeRange(0, stdout.count)) {
             let groups = match.groups(testedString: stdout)

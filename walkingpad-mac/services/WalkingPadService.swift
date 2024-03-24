@@ -18,19 +18,7 @@ class WalkingPadService : ObservableObject {
     @Published var isScanning = false
     @Published var isConnecting = false
     @Published var treadmill: TreadmillService?
-    
-    private var pidUrl: URL
     private var wsProcess: ChildProcess<UnspecifiedInputSource, PipeOutputDestination, PipeOutputDestination>?
-
-    init() throws {
-        pidUrl = try FileManager.default.url(for:.applicationSupportDirectory,
-                                             in: .userDomainMask,
-                                              appropriateFor: nil,
-                                              create: false)
-        .appendingPathComponent("walkingpad-mac/wsserver.pid")
-        
-        print(pidUrl.path())
-    }
     
     func scan() async  -> String? {
         await MainActor.run {
@@ -63,13 +51,6 @@ class WalkingPadService : ObservableObject {
         await MainActor.run {
             isConnecting = true
         }
-                
-        if FileManager.default.fileExists(atPath: pidUrl.path()) {
-            let contents = try! String.init(contentsOf: pidUrl)
-            let pid = Int32(contents)!
-            
-            kill(pid, SIGTERM)
-        }
         
         wsProcess = try! Command.init(executablePath: pythonFilePath)
             .addArgument(wsServerPath!)
@@ -77,16 +58,7 @@ class WalkingPadService : ObservableObject {
             .setStdout(.pipe)
             .setStderr(.pipe)
             .spawn()
-
-        
-        do {
-            try wsProcess?.identifier.description.write(to: URL(fileURLWithPath: pidUrl.path), atomically: true, encoding: String.Encoding.utf8)
-        } catch {
-            // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
-        }
-        
-        monitorParentProcess()
-        
+                
         do {
             await MainActor.run {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
@@ -116,26 +88,5 @@ class WalkingPadService : ObservableObject {
     func disconnect() {
         wsProcess?.terminate()
         treadmill = nil
-        
-        if FileManager.default.fileExists(atPath: pidUrl.path()) {
-            // delete file
-            do {
-                try FileManager.default.removeItem(atPath: pidUrl.path())
-            } catch {
-                print("Could not delete file, probably read-only filesystem")
-            }
-        }
-    }
-    
-    private func monitorParentProcess() {
-        let source = DispatchSource.makeProcessSource(identifier: ProcessInfo.processInfo.processIdentifier, eventMask: .exit, queue: DispatchQueue.global())
-
-        source.setEventHandler {
-            print("Parent process terminated. Killing child process...")
-            self.wsProcess?.terminate()
-            source.cancel()
-        }
-        
-        source.resume()
     }
 }

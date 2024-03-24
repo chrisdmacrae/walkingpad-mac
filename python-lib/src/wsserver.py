@@ -53,6 +53,7 @@ async def connect(params):
 async def disconnect(params):
     await ctler.disconnect()
     await asyncio.sleep(minimal_cmd_space)
+    await sys.exit()
 
 async def run(params):
     await ctler.switch_mode(WalkingPad.MODE_STANDBY) # Ensure we start from a known state, since start_belt is actually toggle_belt
@@ -135,9 +136,13 @@ async def consumer(data, ws):
         print("Unknown method: " + data)
 
 async def consumer_handler(websocket):
-    async for message in websocket:
-        print("Received message: " + message)
-        await consumer(message, websocket)
+    try:
+        async for message in websocket:
+            print("Received message: " + message)
+            await consumer(message, websocket)
+    except websockets.exceptions.ConnectionClosed:
+        print("Client disconnected. Exiting")
+        sys.exit()  # Exits the entire script
 
 
 async def main():

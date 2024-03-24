@@ -15,7 +15,7 @@ struct SettingsView: View {
             KeyboardShortcuts.Recorder("Decrease speed:", name: .decreaseSpeed)
             KeyboardShortcuts.Recorder("Increase speed:", name: .increaseSpeed)
         }
-        .frame(width: 768, height: 480)
+        .padding(24)
     }
 }
 

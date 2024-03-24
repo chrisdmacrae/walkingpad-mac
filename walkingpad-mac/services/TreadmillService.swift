@@ -182,7 +182,7 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
                             self.stats = Stats(time: response.time, distance: response.dist, steps: response.steps)
                             self.currentSpeed = response.speed
                             
-                            if (response.state == 0 && response.speed == 0) {
+                            if ((response.state == 0 || response.state == 5) && response.speed == 0) {
                                 self.isRunning = false
                             }
                             else if (response.state == 1) {

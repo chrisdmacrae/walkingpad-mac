@@ -9,25 +9,47 @@ import SwiftUI
 
 struct ContextMenu: View {
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             SettingsLink {
                 Text("Settings")
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(ContentMenuButtonStyle())
             
             Divider()
             
-            Button(action: {}) {
+            Button(action: {
+                NSApplication.shared.terminate(nil)
+            }) {
                 Text("Quit")
-                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(ContentMenuButtonStyle())
         }
         .padding(8)
+        .frame(width: 140)
     }
 }
 
+struct ContentMenuButtonStyle : ButtonStyle {
+    @State var isHovering = false
+    
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/) {
+            configuration.label
+                .multilineTextAlignment(.leading)
+                .padding(.vertical, 2)
+                .padding(.horizontal, 6)
+            
+            Spacer()
+        }
+        .background() {
+            RoundedRectangle(cornerRadius: 6)
+                .fill(isHovering ? .blue.opacity(0.7) : .clear)
+        }
+        .onHover(perform: { hovering in
+            isHovering = hovering
+        })
+    }
+}
 
 
 #Preview {

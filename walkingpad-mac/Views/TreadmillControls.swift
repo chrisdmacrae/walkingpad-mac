@@ -19,12 +19,7 @@ struct TreadmillControls : View {
     @State private var desiredSpeed = 20.0
     @State private var isEditing = false
     @State private var sliderState: CompactSliderState = .zero
-    
-    @Query(
-        filter: Session.todayPredicate()
-    )
-    private var sessions: [Session]
-    
+        
     init(treadmill: TreadmillService, context: ModelContext) {
         self.treadmill = treadmill
         viewModel = TreadmillViewModel(treadmill: treadmill, context: context)
@@ -137,42 +132,17 @@ struct TreadmillControls : View {
                 }
                 else {
                     if (viewModel.countdown == 0) {
+                        StartState(viewModel: viewModel)
+                    } else {
                         Container() {
-                            VStack(spacing: 8) {
-                                Text("Ready to walk?")
-                                    .font(.system(size: 18, weight: .bold))
-                                Text("After starting, your treadmill will count down before it starts")
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(.white.opacity(0.8))
-                                
-                                Spacer()
-                                
-                                HStack(spacing: 8) {
-                                    Container() {
-                                        Text("\(sessions.count) sessions today")
+                            Text(String(viewModel.countdown))
+                                .font(.system(size: 24))
+                                .onAppear() {
+                                    Task {
+                                        await viewModel.countDown()
                                     }
                                 }
-                                
-                                Spacer()
-                                Button(action: {
-                                    viewModel.start()
-                                }) {
-                                    Text("Start")
-                                        .frame(maxWidth: .infinity)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .buttonStyle(.borderedProminent)
-                                .tint(.blue)
-                            }
                         }
-                    } else {
-                        Text(String(viewModel.countdown))
-                            .font(.system(size: 24))
-                            .onAppear() {
-                                Task {
-                                    await viewModel.countDown()
-                                }
-                            }
                     }
                 }
             }
@@ -191,6 +161,41 @@ struct TreadmillControls : View {
             viewModel.setSpeed(desiredSpeed: Int(desiredSpeed))
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+struct StartState : View {
+    @ObservedObject var viewModel: TreadmillViewModel
+    @Query(filter: Session.todayPredicate())
+    private var sessions: [Session]
+    
+    var body : some View {
+        VStack(spacing: 8) {
+            Text("Ready to walk?")
+                .font(.system(size: 18, weight: .bold))
+            Text("After starting, your treadmill will count down before it starts")
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.8))
+            
+            Spacer()
+            
+            HStack(spacing: 8) {
+                Container() {
+                    Text("\(sessions.count) sessions today")
+                }
+            }
+            
+            Spacer()
+            Button(action: {
+                viewModel.start()
+            }) {
+                Text("Start")
+                    .frame(maxWidth: .infinity)
+            }
+            .frame(maxWidth: .infinity)
+            .buttonStyle(.borderedProminent)
+            .tint(.blue)
+    }
     }
 }
 

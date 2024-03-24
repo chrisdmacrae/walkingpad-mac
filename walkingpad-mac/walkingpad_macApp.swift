@@ -57,7 +57,9 @@ struct walkingpad_macApp: App {
         
         Settings {
             SettingsView()
+                .frame(minWidth: 720, minHeight: 480)
         }
+        .windowResizability(.contentSize)
     }
 }
 

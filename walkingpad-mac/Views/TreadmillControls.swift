@@ -38,15 +38,15 @@ struct TreadmillControls : View {
             else {
                 if (treadmill.isRunning == true) {
                     VStack(spacing: 8) {
-                        Container() {
-                            HStack {
-                                Image(systemName: "timer")
-                                Spacer()
-                                Text(String(treadmill.stats.time))
-                            }
-                        }
-                        
                         HStack(spacing: 8) {
+                            Container() {
+                                HStack {
+                                    Image(systemName: "timer")
+                                    Spacer()
+                                    Text(String(treadmill.stats.time))
+                                }
+                            }
+                            
                             Container() {
                                 HStack {
                                     Image(systemName: "shoeprints.fill")
@@ -78,6 +78,8 @@ struct TreadmillControls : View {
                                     }
                                 }
                                 .buttonStyle(.plain)
+                                .padding(.top, 4)
+                                .padding(.bottom, 2)
                                 
                                 ZStack {
                                     GeometryReader { geometry in
@@ -86,17 +88,20 @@ struct TreadmillControls : View {
                                             Spacer()
                                             Text(String(format: "%.2f", currentSpeed / 10))
                                         }
+                                        .offset(x: 0, y: 2)
                                         .contentShape(.rect)
                                         
                                         
                                         GeometryReader { buttonGeometry in
                                             Text(String(format: "%.2f", desiredSpeed / 10))
+                                                .font(.system(size: 12))
                                                 .foregroundColor(.white)
                                                 .padding(6)
                                                 .background(
                                                     Capsule().fill(Color.blue)
                                                 )
                                                 .offset(x: sliderState.dragLocationX.lower + (geometry.size.width / 2) - 12, y: -3)
+                                                .offset(y: 4)
                                                 .allowsHitTesting(false)
                                         }
                                     }
@@ -114,6 +119,7 @@ struct TreadmillControls : View {
                                     }
                                 }
                                 .buttonStyle(.plain)
+                                .padding(.vertical, 6)
                             }
                         }
                     }
@@ -170,18 +176,55 @@ struct StartState : View {
     private var sessions: [Session]
     
     var body : some View {
+        let totalSteps = sessions.reduce(0, { total, session in
+            return total + session.steps
+        })
+        let totalTime = sessions.reduce(0, { total, session in
+            return total + session.time
+        })
+        let totalDistance = sessions.reduce(0, { total, session in
+            return total + session.distance
+        })
+        
         VStack(spacing: 8) {
             Text("Ready to walk?")
                 .font(.system(size: 18, weight: .bold))
             Text("After starting, your treadmill will count down before it starts")
+                .multilineTextAlignment(.center)
                 .font(.system(size: 12))
                 .foregroundStyle(.white.opacity(0.8))
             
             Spacer()
             
+            Container() {
+                HStack {
+                    Text(String("\(sessions.count) sessions today"))
+                }
+            }
+            
             HStack(spacing: 8) {
                 Container() {
-                    Text("\(sessions.count) sessions today")
+                    HStack {
+                        Image(systemName: "timer")
+                        Spacer()
+                        Text(String(totalTime))
+                    }
+                }
+                
+                Container() {
+                    HStack {
+                        Image(systemName: "shoeprints.fill")
+                        Spacer()
+                        Text(String(totalSteps))
+                    }
+                }
+                
+                Container() {
+                    HStack {
+                        Image(systemName: "lines.measurement.horizontal")
+                        Spacer()
+                        Text(String(totalDistance))
+                    }
                 }
             }
             

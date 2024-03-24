@@ -41,7 +41,7 @@ struct ControlView: View {
             }
         }
         .padding(8)
-        .frame(width: 300, height: 200)
+        .frame(minWidth: 300, minHeight: 100)
         .background(.windowBackground)
     }
         

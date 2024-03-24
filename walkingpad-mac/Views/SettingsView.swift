@@ -9,13 +9,24 @@ import SwiftUI
 import KeyboardShortcuts
 
 struct SettingsView: View {
-    var body: some View {
-        Form {
-            KeyboardShortcuts.Recorder("Toggle treadmill on/off:", name: .toggleTreadmill)
-            KeyboardShortcuts.Recorder("Decrease speed:", name: .decreaseSpeed)
-            KeyboardShortcuts.Recorder("Increase speed:", name: .increaseSpeed)
+    private enum Tabs: Hashable {
+            case general
         }
-        .padding(24)
+    
+    var body: some View {
+        TabView {
+            Form {
+                KeyboardShortcuts.Recorder("Toggle treadmill on/off:", name: .toggleTreadmill)
+                KeyboardShortcuts.Recorder("Decrease speed:", name: .decreaseSpeed)
+                KeyboardShortcuts.Recorder("Increase speed:", name: .increaseSpeed)
+            }
+            .tabItem {
+                Label("General", systemImage: "gearshape")
+            }
+            .tag(Tabs.general)
+        }
+        .padding(20)
+        .frame(width: 375, height: 150)
     }
 }
 

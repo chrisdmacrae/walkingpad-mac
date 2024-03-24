@@ -11,7 +11,7 @@ import SwiftData
 struct ControlView: View {
     @ObservedObject var service: WalkingPadService
     @Environment(\.modelContext) private var modelContext    
-    @State private var macAddress: String?
+    @State private var device: WalkingPadDevice?
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
@@ -24,19 +24,19 @@ struct ControlView: View {
         }
         .onAppear() {
             Task {
-                while (macAddress == nil) {
-                    macAddress = await service.scan()
+                while (device == nil) {
+                    device = await service.scan()
                 }
             }
         }
-        .onChange(of: macAddress) {
-            if (macAddress != nil) {
+        .onChange(of: device) {
+            if (device?.mac != nil) {
                 Task {
-                    await service.connect(macAddress: macAddress!)
+                    await service.connect(macAddress: device!.mac)
                 }
             } else {
                 Task {
-                    macAddress = await service.scan()
+                    device = await service.scan()
                 }
             }
         }

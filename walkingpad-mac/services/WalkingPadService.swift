@@ -14,37 +14,43 @@ let pythonFilePath = FilePath(pythonPath!)
 let scanPath = Bundle.main.path(forResource: "python-lib/src/scan", ofType: "py")
 let wsServerPath = Bundle.main.path(forResource: "python-lib/src/wsserver", ofType: "py")
 
+struct WalkingPadDevice : Equatable {
+    var mac: String
+    var model: String
+}
+
 class WalkingPadService : ObservableObject {
     @Published var isScanning = false
     @Published var isConnecting = false
     @Published var treadmill: TreadmillService?
     private var wsProcess: ChildProcess<UnspecifiedInputSource, PipeOutputDestination, PipeOutputDestination>?
     
-    func scan() async  -> String? {
+    func scan() async  -> WalkingPadDevice? {
         await MainActor.run {
             isScanning = true
         }
         
-        var macAddress: String? = nil
+        var device: WalkingPadDevice? = nil
         let output = try! Command.init(executablePath: pythonFilePath)
             .addArgument(scanPath!)
             .waitForOutput()
-        let dirtyMatcher = try! NSRegularExpression(pattern: "Device: \\[ 0\\], (.*-.*-.*-.*), .*,")
+        let dirtyMatcher = try! NSRegularExpression(pattern: "Device: \\[ 0\\], (.*-.*-.*-.*), (.*),")
         let stdout = output.stdout
-        
-        print(stdout)
-        
+                
         if let match = dirtyMatcher.firstMatch(in: stdout, range: NSMakeRange(0, stdout.count)) {
             let groups = match.groups(testedString: stdout)
+            let lastTwo = Array(groups.suffix(2))
+            let mac = lastTwo.first!
+            let model = lastTwo.last!
             
-            macAddress = groups.last
+            device = WalkingPadDevice(mac: mac, model: model)
         }
         
         await MainActor.run {
             isScanning = false
         }
         
-        return macAddress
+        return device
     }
     
     func connect(macAddress: String) async {

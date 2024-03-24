@@ -1,64 +1,26 @@
 //
-//  ContentView.swift
+//  TreadmillControls.swift
 //  walkingpad-mac
 //
-//  Created by Chris D. MacRae on 2024-03-22.
+//  Created by Chris D. MacRae on 2024-03-23.
 //
 
 import SwiftUI
-import SwiftData
+import KeyboardShortcuts
 import CompactSlider
+import Combine
 
-struct ContentView: View {
-    @ObservedObject var service: WalkingPadService
-    @Environment(\.modelContext) private var modelContext
-    
-    @State private var macAddress: String?
-    
-    var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .trailing, spacing: 8) {
-                if (service.treadmill != nil) {
-                    TreadmillControls(treadmill: service.treadmill!)
-                }
-                else if (service.isScanning || service.isConnecting || service.treadmill != nil) {
-                    Spinner(text: "Setting things up...")
-                }
-                
-                
-            }
-            .onAppear() {
-                Task {
-                    while (macAddress == nil) {
-                        macAddress = await service.scan()
-                    }
-                }
-            }
-            .onChange(of: macAddress) {
-                if (macAddress != nil) {
-                    Task {
-                        await service.connect(macAddress: macAddress!)
-                    }
-                } else {
-                    Task {
-                        macAddress = await service.scan()
-                    }
-                }
-            }
-        }
-        .padding(8)
-        .frame(width: 300, height: 200)
-        .background(.windowBackground)
-        .focusEffectDisabled()
-    }
-        
-}
 
 struct TreadmillControls : View {
     @ObservedObject var treadmill: TreadmillService
-    @State var currentSpeed = 0.0
-    @State var countdown: Int = 0
+    @ObservedObject private var viewModel: TreadmillViewModel
+    @State private var currentSpeed = 0.0
     @State private var isEditing = false
+    
+    init(treadmill: TreadmillService) {
+        self.treadmill = treadmill
+        viewModel = TreadmillViewModel(treadmill: treadmill)
+    }
     
     var body : some View {
         VStack(spacing: 8) {
@@ -102,7 +64,7 @@ struct TreadmillControls : View {
                         Container() {
                             HStack(spacing: 8) {
                                 Button(action: {
-                                    treadmill.decreaseSpeed(increment: 5)
+                                    viewModel.decreaseSpeed()
                                 }) {
                                     Label() {
                                         Text("Decrease speed")
@@ -115,7 +77,7 @@ struct TreadmillControls : View {
                                 .buttonStyle(.plain)
                                 
                                 VStack {
-                                    CompactSlider(value: $currentSpeed, in: 1...60, step: 1) {
+                                    CompactSlider(value: $currentSpeed, in: 5...60, step: 1) {
                                         Image(systemName: "figure.run")
                                             Spacer()
                                             Text(String(format: "%.2f", currentSpeed / 10))
@@ -123,7 +85,7 @@ struct TreadmillControls : View {
                                 }
                                 
                                 Button(action: {
-                                    treadmill.increaseSpeed(increment: 5)
+                                    viewModel.increaseSpeed()
                                 }) {
                                     Label() {
                                         Text("Increase speed")
@@ -146,7 +108,7 @@ struct TreadmillControls : View {
                 
                 if (treadmill.isRunning == true) {
                     Button(action: {
-                        treadmill.stop()
+                        viewModel.stop()
                     }) {
                         Text("Stop")
                             .frame(maxWidth: .infinity)
@@ -157,7 +119,7 @@ struct TreadmillControls : View {
                 }
                 else {
                     Container() {
-                        if (countdown == 0) {
+                        if (viewModel.countdown == 0) {
                             VStack(spacing: 8) {
                                 Text("Ready to walk?")
                                     .font(.system(size: 18, weight: .bold))
@@ -166,8 +128,7 @@ struct TreadmillControls : View {
                                     .foregroundStyle(.white.opacity(0.8))
                                 Spacer()
                                 Button(action: {
-                                    treadmill.start()
-                                    countdown = 3
+                                    viewModel.start()
                                 }) {
                                     Text("Start")
                                         .frame(maxWidth: .infinity)
@@ -177,13 +138,18 @@ struct TreadmillControls : View {
                                 .tint(.blue)
                             }
                         } else {
-                            Text(String(countdown))
+                            Text(String(viewModel.countdown))
                                 .font(.system(size: 24))
                                 .onAppear() {
                                     Task {
-                                        await countDown()
+                                        await viewModel.countDown()
                                     }
                                 }
+                        }
+                    }
+                    .onAppear() {
+                        KeyboardShortcuts.onKeyUp(for: .toggleTreadmill) { [self] in
+                            viewModel.toggle()
                         }
                     }
                 }
@@ -196,6 +162,74 @@ struct TreadmillControls : View {
             treadmill.setSpeed(speed: Int(currentSpeed))
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+@MainActor
+class TreadmillViewModel : ObservableObject {
+    @ObservedObject var treadmill: TreadmillService
+    @Published var countdown: Int = 0
+    
+    private var timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+    private var cancellables = Set<AnyCancellable>()
+    private var isToggleEnabled = true
+    private var isSpeedChangeEnabled = true
+    
+    init(treadmill: TreadmillService) {
+        self.treadmill = treadmill
+        
+        timer.sink { _ in
+            self.isToggleEnabled = true
+            self.isSpeedChangeEnabled = true
+        }
+        .store(in: &cancellables)
+
+        KeyboardShortcuts.onKeyUp(for: .toggleTreadmill) { [self] in
+            toggle()
+        }
+        
+        KeyboardShortcuts.onKeyUp(for: .decreaseSpeed) { [self] in
+            decreaseSpeed()
+        }
+        
+        KeyboardShortcuts.onKeyUp(for: .increaseSpeed) { [self] in
+            increaseSpeed()
+        }
+    }
+    
+    func toggle() {
+        guard isToggleEnabled else { return }
+        
+        if (treadmill.isRunning) {
+            stop()
+        }
+        else {
+            start()
+        }
+    }
+    
+    func decreaseSpeed() {
+        guard isSpeedChangeEnabled else { return }
+        guard treadmill.isRunning else { return }
+
+        treadmill.decreaseSpeed(increment: 5)
+    }
+    
+    func increaseSpeed() {
+        guard isSpeedChangeEnabled else { return }
+        guard treadmill.isRunning else { return }
+
+        treadmill.increaseSpeed(increment: 5)
+    }
+    
+    func start() {
+        treadmill.start()
+        countdown = 3
+    }
+    
+    func stop() {
+        treadmill.stop()
+        countdown = 0
     }
     
     func countDown() async {
@@ -211,58 +245,6 @@ struct TreadmillControls : View {
     }
 }
 
-struct Container<Content : View> : View {
-    @ViewBuilder var content: Content
-    
-    var body: some View {
-        VStack {
-            content
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(8)
-        .background() {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(.black.opacity(0.05))
-                .stroke(.white.opacity(0.1), lineWidth: 1)
-                .stroke(.black.opacity(0.1), lineWidth: 2)
-                .background() {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.black.opacity(0.2))
-                        .blur(radius: 12)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-    }
-}
-
-struct Spinner : View {
-    var text: String?
-    @State private var degreesRotating = 0.0
-    
-    var body : some View {
-        HStack(alignment: .center) {
-            VStack(spacing: 8) {
-                Image(systemName: "rays")
-                    .font(.system(size: 24))
-                    .foregroundColor(.white)
-                    .rotationEffect(.degrees(degreesRotating))
-                    .onAppear {
-                        withAnimation(.linear(duration: 1)
-                            .speed(0.5).repeatForever(autoreverses: false)) {
-                                degreesRotating = 360.0
-                            }
-                    }
-                
-                if (text != nil) {
-                    Text(text!)
-                }
-            }
-        }
-    }
-}
-
 #Preview {
-    ContentView(service: try! WalkingPadService())
-        .modelContainer(for: [], inMemory: true)
+    TreadmillControls(treadmill: TreadmillService())
 }

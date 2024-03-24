@@ -11,8 +11,14 @@
 		A43E09682BAF475400FC7F98 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A43E09672BAF475400FC7F98 /* SettingsView.swift */; };
 		A43E096A2BAF476300FC7F98 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A43E09692BAF476300FC7F98 /* Constants.swift */; };
 		A47B786F2BAF7D16004D4E57 /* CompactSlider in Frameworks */ = {isa = PBXBuildFile; productRef = A47B786E2BAF7D16004D4E57 /* CompactSlider */; };
+		A47B78722BAF9890004D4E57 /* MenuBarExtraAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A47B78712BAF9890004D4E57 /* MenuBarExtraAccess */; };
+		A47B78742BAF9A13004D4E57 /* ContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B78732BAF9A13004D4E57 /* ContextMenu.swift */; };
+		A47B78782BAF9FFA004D4E57 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B78772BAF9FFA004D4E57 /* ContentView.swift */; };
+		A47B787A2BAFA373004D4E57 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B78792BAFA373004D4E57 /* Container.swift */; };
+		A47B787C2BAFA384004D4E57 /* Spinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B787B2BAFA384004D4E57 /* Spinner.swift */; };
+		A47B787E2BAFA3A6004D4E57 /* TreadmillControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47B787D2BAFA3A6004D4E57 /* TreadmillControls.swift */; };
 		A49F6E572BAE4B4D00F1EA99 /* walkingpad_macApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E562BAE4B4D00F1EA99 /* walkingpad_macApp.swift */; };
-		A49F6E592BAE4B4D00F1EA99 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E582BAE4B4D00F1EA99 /* ContentView.swift */; };
+		A49F6E592BAE4B4D00F1EA99 /* ControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E582BAE4B4D00F1EA99 /* ControlView.swift */; };
 		A49F6E6B2BAE4B4F00F1EA99 /* walkingpad_macTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E6A2BAE4B4F00F1EA99 /* walkingpad_macTests.swift */; };
 		A49F6E752BAE4B4F00F1EA99 /* walkingpad_macUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E742BAE4B4F00F1EA99 /* walkingpad_macUITests.swift */; };
 		A49F6E772BAE4B4F00F1EA99 /* walkingpad_macUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F6E762BAE4B4F00F1EA99 /* walkingpad_macUITestsLaunchTests.swift */; };
@@ -44,9 +50,14 @@
 /* Begin PBXFileReference section */
 		A43E09672BAF475400FC7F98 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A43E09692BAF476300FC7F98 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		A47B78732BAF9A13004D4E57 /* ContextMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenu.swift; sourceTree = "<group>"; };
+		A47B78772BAF9FFA004D4E57 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A47B78792BAFA373004D4E57 /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
+		A47B787B2BAFA384004D4E57 /* Spinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spinner.swift; sourceTree = "<group>"; };
+		A47B787D2BAFA3A6004D4E57 /* TreadmillControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreadmillControls.swift; sourceTree = "<group>"; };
 		A49F6E532BAE4B4D00F1EA99 /* walkingpad-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "walkingpad-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A49F6E562BAE4B4D00F1EA99 /* walkingpad_macApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = walkingpad_macApp.swift; sourceTree = "<group>"; };
-		A49F6E582BAE4B4D00F1EA99 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A49F6E582BAE4B4D00F1EA99 /* ControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlView.swift; sourceTree = "<group>"; };
 		A49F6E5C2BAE4B4F00F1EA99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A49F6E5F2BAE4B4F00F1EA99 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A49F6E612BAE4B4F00F1EA99 /* walkingpad_mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = walkingpad_mac.entitlements; sourceTree = "<group>"; };
@@ -69,6 +80,7 @@
 				A49F6EA02BAF0CB500F1EA99 /* SwiftCommand in Frameworks */,
 				A49F773B2BAF24E000F1EA99 /* Starscream in Frameworks */,
 				A43E09662BAF473E00FC7F98 /* KeyboardShortcuts in Frameworks */,
+				A47B78722BAF9890004D4E57 /* MenuBarExtraAccess in Frameworks */,
 				A47B786F2BAF7D16004D4E57 /* CompactSlider in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +102,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A47B78752BAF9FA7004D4E57 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A43E09672BAF475400FC7F98 /* SettingsView.swift */,
+				A49F6E582BAE4B4D00F1EA99 /* ControlView.swift */,
+				A47B78772BAF9FFA004D4E57 /* ContentView.swift */,
+				A47B78732BAF9A13004D4E57 /* ContextMenu.swift */,
+				A47B78792BAFA373004D4E57 /* Container.swift */,
+				A47B787B2BAFA384004D4E57 /* Spinner.swift */,
+				A47B787D2BAFA3A6004D4E57 /* TreadmillControls.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A47B78762BAF9FAF004D4E57 /* services */ = {
+			isa = PBXGroup;
+			children = (
+				A49F6E9C2BAF0B9100F1EA99 /* WalkingPadService.swift */,
+				A49F773C2BAF24F000F1EA99 /* TreadmillService.swift */,
+			);
+			path = services;
+			sourceTree = "<group>";
+		};
 		A49F6E4A2BAE4B4D00F1EA99 = {
 			isa = PBXGroup;
 			children = (
@@ -114,12 +149,10 @@
 		A49F6E552BAE4B4D00F1EA99 /* walkingpad-mac */ = {
 			isa = PBXGroup;
 			children = (
+				A47B78762BAF9FAF004D4E57 /* services */,
+				A47B78752BAF9FA7004D4E57 /* Views */,
 				A49F77362BAF19BB00F1EA99 /* extensions */,
 				A43E09692BAF476300FC7F98 /* Constants.swift */,
-				A49F6E9C2BAF0B9100F1EA99 /* WalkingPadService.swift */,
-				A49F773C2BAF24F000F1EA99 /* TreadmillService.swift */,
-				A43E09672BAF475400FC7F98 /* SettingsView.swift */,
-				A49F6E582BAE4B4D00F1EA99 /* ContentView.swift */,
 				A49F6E562BAE4B4D00F1EA99 /* walkingpad_macApp.swift */,
 				A49F6E5C2BAE4B4F00F1EA99 /* Assets.xcassets */,
 				A49F6E612BAE4B4F00F1EA99 /* walkingpad_mac.entitlements */,
@@ -182,6 +215,7 @@
 				A49F773A2BAF24E000F1EA99 /* Starscream */,
 				A43E09652BAF473E00FC7F98 /* KeyboardShortcuts */,
 				A47B786E2BAF7D16004D4E57 /* CompactSlider */,
+				A47B78712BAF9890004D4E57 /* MenuBarExtraAccess */,
 			);
 			productName = "walkingpad-mac";
 			productReference = A49F6E532BAE4B4D00F1EA99 /* walkingpad-mac.app */;
@@ -261,6 +295,7 @@
 				A49F77392BAF24E000F1EA99 /* XCRemoteSwiftPackageReference "Starscream" */,
 				A43E09642BAF473E00FC7F98 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 				A47B786D2BAF7D16004D4E57 /* XCRemoteSwiftPackageReference "CompactSlider" */,
+				A47B78702BAF9890004D4E57 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
 			);
 			productRefGroup = A49F6E542BAE4B4D00F1EA99 /* Products */;
 			projectDirPath = "";
@@ -303,12 +338,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A47B787E2BAFA3A6004D4E57 /* TreadmillControls.swift in Sources */,
+				A47B787C2BAFA384004D4E57 /* Spinner.swift in Sources */,
 				A49F77382BAF19CB00F1EA99 /* NSTextCheckingResult+groups.swift in Sources */,
-				A49F6E592BAE4B4D00F1EA99 /* ContentView.swift in Sources */,
+				A49F6E592BAE4B4D00F1EA99 /* ControlView.swift in Sources */,
 				A49F6E9D2BAF0B9100F1EA99 /* WalkingPadService.swift in Sources */,
 				A43E09682BAF475400FC7F98 /* SettingsView.swift in Sources */,
 				A43E096A2BAF476300FC7F98 /* Constants.swift in Sources */,
+				A47B78782BAF9FFA004D4E57 /* ContentView.swift in Sources */,
 				A49F773D2BAF24F000F1EA99 /* TreadmillService.swift in Sources */,
+				A47B787A2BAFA373004D4E57 /* Container.swift in Sources */,
+				A47B78742BAF9A13004D4E57 /* ContextMenu.swift in Sources */,
 				A49F6E572BAE4B4D00F1EA99 /* walkingpad_macApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -654,6 +694,14 @@
 				minimumVersion = 1.1.5;
 			};
 		};
+		A47B78702BAF9890004D4E57 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/orchetect/MenuBarExtraAccess";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.5;
+			};
+		};
 		A49F6E9B2BAE6BD000F1EA99 /* XCRemoteSwiftPackageReference "MacControlCenterUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/orchetect/MacControlCenterUI";
@@ -690,6 +738,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A47B786D2BAF7D16004D4E57 /* XCRemoteSwiftPackageReference "CompactSlider" */;
 			productName = CompactSlider;
+		};
+		A47B78712BAF9890004D4E57 /* MenuBarExtraAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A47B78702BAF9890004D4E57 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */;
+			productName = MenuBarExtraAccess;
 		};
 		A49F6E9F2BAF0CB500F1EA99 /* SwiftCommand */ = {
 			isa = XCSwiftPackageProductDependency;

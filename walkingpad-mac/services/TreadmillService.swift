@@ -7,7 +7,6 @@
 
 import Foundation
 import Starscream
-import KeyboardShortcuts
 
 class TreadmillService : ObservableObject, WebSocketDelegate {
     @Published var isRunning = false
@@ -25,15 +24,6 @@ class TreadmillService : ObservableObject, WebSocketDelegate {
         socket = WebSocket(request: request)
         socket.delegate = self
         socket.connect()
-        
-        KeyboardShortcuts.onKeyUp(for: .toggleTreadmill) { [self] in
-            if (isRunning && isWSConnected) {
-                stop()
-            }
-            else if(!isRunning && isWSConnected) {
-                start()
-            }
-        }
     }
     
     func connect() {

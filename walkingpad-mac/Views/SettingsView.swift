@@ -12,6 +12,9 @@ struct SettingsView: View {
     var body: some View {
         Form {
             KeyboardShortcuts.Recorder("Toggle treadmill on/off:", name: .toggleTreadmill)
+            KeyboardShortcuts.Recorder("Decrease speed:", name: .decreaseSpeed)
+            KeyboardShortcuts.Recorder("Increase speed:", name: .increaseSpeed)
+
         }
     }
 }

@@ -8,10 +8,74 @@
 import SwiftUI
 import SwiftData
 import MenuBarExtraAccess
+import TreadmillController
+import CoreBluetooth
+
+class Treadmill: TreadmillControllerDelegate, ObservableObject {
+	@Published var isScanning = false
+	@Published var isConnected = false
+	
+	@Published var isRunning = false
+	
+	@Published var stats: Optional<TreadmillStats> = nil
+	
+	
+	public let treadmillController = TreadmillController()
+	
+	init() {
+		treadmillController.delegate = self
+	}
+	
+	
+	func treadmillController(_ treadmillController: TreadmillController, didUpdateStats stats: TreadmillStats) {
+		DispatchQueue.main.async {
+			self.stats = stats
+		}
+	}
+	
+	func treadmillController(_ treadmillController: TreadmillController, readyToScanForTreadmills ready: Bool) {
+		print("Starting Scanning")
+		treadmillController.startScanning()
+		
+		DispatchQueue.main.async {
+			self.isScanning = true
+		}
+	}
+	
+	func treadmillController(_ treadmillController: TreadmillController, didDiscoverTreadmill peripheral: CBPeripheral) {
+		print("Stopping Scanning")
+		treadmillController.stopScanning()
+		
+		DispatchQueue.main.async {
+			self.isScanning = false
+			self.isConnected = true
+		}
+		
+		print("Starting connecting")
+		treadmillController.connectToTreadmill(peripheral)
+	}
+	
+	func treadmillController(_ treadmillController: TreadmillController, didConnectToTreadmill peripheral: CBPeripheral) {
+		print("Is connected")
+		DispatchQueue.main.async {
+			self.isConnected = true
+		}
+	}
+	
+	func treadmillController(_ treadmillController: TreadmillController, didFailToConnectToTreadmill peripheral: CBPeripheral, error: any Error) {
+		print("Failed to connected to treadmill")
+	}
+	
+	func treadmillController(_ treadmillController: TreadmillController, didDisconnectFromTreadmill peripheral: CBPeripheral, error: any Error) {
+		print("Disconnected to treadmill")
+	}
+	
+	
+}
 
 @main
 struct walkingpad_macApp: App {
-    @ObservedObject private var service = WalkingPadService()
+    @ObservedObject private var treadmill = Treadmill()
     @State var isMenuPresented: Bool = false
     @State var menuType = AppMenuType.control
 
@@ -30,7 +94,7 @@ struct walkingpad_macApp: App {
     
     var body: some Scene {
         MenuBarExtra("WalkingPad") {
-            ContentView(menuType: $menuType, service: service)
+            ContentView(menuType: $menuType, treadmill: treadmill)
                 .modelContainer(sharedModelContainer)
         }
         .menuBarExtraStyle(.window)

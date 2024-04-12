@@ -291,6 +291,8 @@ class TreadmillViewModel : ObservableObject {
     func setSpeed(desiredSpeed: Int) {
         guard isSpeedChangeEnabled else { return }
         guard treadmill.isRunning else { return }
+			
+			treadmill.treadmillController.setSpeed(Int(desiredSpeed))
 
         // treadmill.setSpeed(speed: desiredSpeed)
     }
@@ -300,6 +302,9 @@ class TreadmillViewModel : ObservableObject {
         guard treadmill.isRunning else { return }
 
         desiredSpeed -= 5
+				
+			treadmill.treadmillController.setSpeed(Int(desiredSpeed))
+			
         // treadmill.setSpeed(speed: Int(desiredSpeed))
     }
     
@@ -308,13 +313,14 @@ class TreadmillViewModel : ObservableObject {
         guard treadmill.isRunning else { return }
     
         desiredSpeed += 5
+			treadmill.treadmillController.setSpeed(Int(desiredSpeed))
         // treadmill.setSpeed(speed: Int(desiredSpeed))
     }
     
     func start() {
         //treadmill.start()
 			
-			//treadmill.treadmillController.selectManualMode()
+			treadmill.treadmillController.selectManualMode()
 			
 			//usleep(700)
 			

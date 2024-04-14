@@ -15,7 +15,6 @@ import Combine
 struct TreadmillControls : View {
     @ObservedObject var treadmill: Treadmill
     @ObservedObject private var viewModel: TreadmillViewModel
-    @State private var currentSpeed = 0.0
     @State private var isEditing = false
     @State private var sliderState: CompactSliderState = .zero
         
@@ -81,18 +80,19 @@ struct TreadmillControls : View {
                                 .padding(.bottom, 2)
                                 
                                 ZStack {
+																	
                                     GeometryReader { geometry in
-                                        CompactSlider(value: $viewModel.desiredSpeed, in: 5...60, step: 1, state: $sliderState) {
+																			CompactSlider(value: $viewModel.treadmill.desiredSpeed, in: 1...6, step: 0.25, state: $sliderState) {
                                             Image(systemName: "figure.run")
                                             Spacer()
-                                            Text(String(format: "%.2f", currentSpeed / 10))
+																				Text(String(format: "%.2f", treadmill.stats?.beltSpeed ?? 1.0))
                                         }
                                         .offset(x: 0, y: 2)
                                         .contentShape(.rect)
                                         
                                         
                                         GeometryReader { buttonGeometry in
-                                            Text(String(format: "%.2f", viewModel.desiredSpeed / 10))
+																					Text(String(format: "%.2f", viewModel.treadmill.desiredSpeed))
                                                 .font(.system(size: 12))
                                                 .foregroundColor(.white)
                                                 .padding(6)
@@ -237,6 +237,28 @@ struct StartState : View {
             .frame(maxWidth: .infinity)
             .buttonStyle(.borderedProminent)
             .tint(.blue)
+					
+					Spacer()
+					Button(action: {
+							viewModel.manualMode()
+					}) {
+							Text("MANUAL")
+									.frame(maxWidth: .infinity)
+					}
+					.frame(maxWidth: .infinity)
+					.buttonStyle(.borderedProminent)
+					.tint(.blue)
+					
+					Spacer()
+					Button(action: {
+							viewModel.standbyMode()
+					}) {
+							Text("STANDBY")
+									.frame(maxWidth: .infinity)
+					}
+					.frame(maxWidth: .infinity)
+					.buttonStyle(.borderedProminent)
+					.tint(.blue)
     }
     }
 }
@@ -245,7 +267,6 @@ struct StartState : View {
 class TreadmillViewModel : ObservableObject {
     @ObservedObject var treadmill: Treadmill
     var context: ModelContext
-    @Published var desiredSpeed = 20.0
     @Published var countdown: Int = 0
     
     private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -288,11 +309,11 @@ class TreadmillViewModel : ObservableObject {
         }
     }
     
-    func setSpeed(desiredSpeed: Int) {
+    func setSpeed(desiredSpeed: Double) {
         guard isSpeedChangeEnabled else { return }
         guard treadmill.isRunning else { return }
 			
-			treadmill.treadmillController.setSpeed(Int(desiredSpeed))
+			treadmill.setDesiredSpeed(desiredSpeed)
 
         // treadmill.setSpeed(speed: desiredSpeed)
     }
@@ -301,9 +322,7 @@ class TreadmillViewModel : ObservableObject {
         guard isSpeedChangeEnabled else { return }
         guard treadmill.isRunning else { return }
 
-        desiredSpeed -= 5
-				
-			treadmill.treadmillController.setSpeed(Int(desiredSpeed))
+			treadmill.setDesiredSpeed(treadmill.desiredSpeed - 0.25)
 			
         // treadmill.setSpeed(speed: Int(desiredSpeed))
     }
@@ -312,39 +331,45 @@ class TreadmillViewModel : ObservableObject {
         guard isSpeedChangeEnabled else { return }
         guard treadmill.isRunning else { return }
     
-        desiredSpeed += 5
-			treadmill.treadmillController.setSpeed(Int(desiredSpeed))
+			treadmill.setDesiredSpeed(treadmill.desiredSpeed + 0.25)
+			
         // treadmill.setSpeed(speed: Int(desiredSpeed))
     }
     
     func start() {
         //treadmill.start()
 			
-			treadmill.treadmillController.selectManualMode()
+			
 			
 			//usleep(700)
 			
 			treadmill.treadmillController.startBelt()
 			
-			treadmill.isRunning = true
 			
         countdown = 5
         session = Session()
-        // context.insert(session!)
+        context.insert(session!)
     }
     
     func stop() {
 			session?.steps = treadmill.stats?.currentSteps ?? 0
-        session?.distance = Double(treadmill.stats?.currentDistance ?? 0)
+			session?.distance = Double(treadmill.stats?.currentDistance ?? 0)
 			session?.time = Double(treadmill.stats?.currentRunningTime ?? 0)
 
 			treadmill.treadmillController.stopBelt()
-			treadmill.isRunning = false
 			
 			
         // treadmill.stop()
         countdown = 0
     }
+	
+	func manualMode() {
+		treadmill.treadmillController.selectManualMode()
+	}
+	
+	func standbyMode() {
+		treadmill.treadmillController.selectStandbyMode()
+	}
     
     func countDown() async {
         while (countdown > 0) {

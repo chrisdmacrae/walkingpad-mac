@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var menuType: AppMenuType
-    @ObservedObject var service: WalkingPadService
+    @ObservedObject var treadmill: Treadmill
 
     var body: some View {
         if (menuType == .control) {
-            ControlView(service: service)
+					ControlView(treadmill: treadmill)
                 .focusEffectDisabled()
 
         }
@@ -24,6 +24,6 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView(menuType: .constant(.context), service: try! WalkingPadService())
-}
+//#Preview {
+//    ContentView(menuType: .constant(.context), service: try! WalkingPadService())
+//}
